@@ -2,7 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <time.h>
-#define tol 1e-5
+
 using namespace std;
 
 numerical_methods::numerical_methods()
@@ -64,8 +64,10 @@ int gauss_seidel::gauss_seidel_method()
 
             sum1=0.0;
 
-            if(fabs(temp - Xmatrix[m]) < tol)
+            if(fabs(temp - Xmatrix[m]) < TOL)
                 residual = false;
+            else
+                residual = true;
             iter++;
 
         }
@@ -87,6 +89,7 @@ int gauss_seidel::gauss_seidel_method()
 double *thomas_algorithm::L;
 double *thomas_algorithm::U;
 double *thomas_algorithm::y;
+double *thomas_algorithm::A;
 int thomas_algorithm::n;
 
 /* (n by n diagonally dominant matrix) Gauss seidel solver
@@ -105,7 +108,7 @@ int thomas_algorithm::n;
 
 thomas_algorithm::thomas_algorithm(int size)
 {
-    L=new double[size*size]();U=new double[size*size]();y=new double[size]();
+    L=new double[size*size]();U=new double[size*size]();y=new double[size]();A=new double[size*size];
      n = size;
 
 
@@ -113,10 +116,26 @@ thomas_algorithm::thomas_algorithm(int size)
 
 thomas_algorithm::~thomas_algorithm()
 {
-    delete []L;delete []U; delete []y;
+    delete []L;delete []U; delete []y;delete A;
     L=NULL;U=NULL;y=NULL;
 }
 
+
+void thomas_algorithm::A_tridiagonalmatrix_cons(double dia_ele, double upper_dia_ele, double lower_dia_ele)
+{
+        for(int i=0;i<n;i++)
+        {
+            A[i*(n+1)]=dia_ele;
+            if(i<n-1)
+            {
+                A[(i+1)*n+i]=lower_dia_ele;
+                A[(i*n)+1+i]=upper_dia_ele;
+            }
+
+        }
+
+
+}
 
 void thomas_algorithm::thomas_algorithm_solver(double *U_n, double *B)
 {
@@ -141,7 +160,7 @@ void thomas_algorithm::thomas_algorithm_solver(double *U_n, double *B)
     }
 }
 
-int thomas_algorithm::LU_Decomposition(double *A)
+int thomas_algorithm::LU_Decomposition()
 {
 
     U[0]=A[0];U[1]=A[1];L[0]=1;

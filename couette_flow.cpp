@@ -6,29 +6,20 @@ couette_flow::couette_flow(int div)
     length=1.0;
     del_y=length/div;
     matrix_size=div+1-2;
-    A = new double[matrix_size*matrix_size];B=new double[matrix_size];U_n=new double[matrix_size];
+    B=new double[matrix_size];U_n=new double[matrix_size];
 }
 couette_flow::~couette_flow()
 {
-    delete []A;delete []B; delete []U_n;
+    delete []B; delete []U_n;
 }
 
-void couette_flow::construction(double del_t,double Re, double e)
+void couette_flow::construction(double del_t,double Re)
 {
-    double a, b;E=e;
+    //double a, b;E=e;
     if(del_t==0)
         del_t = E*Re*del_y*del_y;
-     a = -E/2;b=1+E;
-    for(int i=0;i<matrix_size;i++)
-    {
-        A[i*(matrix_size+1)]=b;
-        if(i<matrix_size-1)
-        {
-            A[(i+1)*matrix_size+i]=a;
-            A[(i*matrix_size)+1+i]=a;
-        }
+     //a = -E/2;b=1+E;
 
-    }
 
 }
 
@@ -62,14 +53,10 @@ void couette_flow::set_U(double *updated_U)
 void couette_flow::couette_flow_solver()
 {
     thomas_algorithm *h = new thomas_algorithm(matrix_size);
+    h->A_tridiagonalmatrix_cons(1+E,-E/2,-E/2);
 
-    h->LU_Decomposition(A);
-    /*sending private variable pointer to another class !!!!! probably put all numerical methods into one file and derive it here.
-    convert private variables to protected variables*/
+    h->LU_Decomposition();
 
-    /*for(int i=0;i<matrix_size;i++)
-        cout<<U_n[i]<<endl;
-*/
     for(int i=0;i<1361;i++)
     {
         h->thomas_algorithm_solver(U_n, B);
@@ -81,8 +68,9 @@ void couette_flow::couette_flow_solver()
     for(int i=0;i<matrix_size;i++)
         cout<<U_n[i]<<endl;
     cout<<inital_last<<endl;
+    delete h;
 
-    //h->thomas_algorithm_solver(A, B, U_n, matrix_size);
+
 
 }
 

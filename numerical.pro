@@ -20,10 +20,14 @@ SOURCES += main.cpp \
     couette_flow.cpp \
     simple.cpp \
     numerical_methods.cpp \
-    structured_domain.cpp
+    structured_domain.cpp \
+    constants.cpp \
+    simplepatankar.cpp
 
 HEADERS += \
     couette_flow.h \
     simple.h \
     numerical_methods.h \
-    structured_domain.h
+    structured_domain.h \
+    constants.h \
+    simplepatankar.h

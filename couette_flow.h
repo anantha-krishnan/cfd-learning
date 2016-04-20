@@ -15,7 +15,7 @@ public:
     void set_constantBmatrix();
     void set_U(double *);
     void couette_flow_solver();
-    void construction(double , double , double );
+    void construction(double , double );
     double *U_n,*A,*B,length, Re,del_y,del_t, E, initial_first, inital_last;
     int matrix_size, div;
 
